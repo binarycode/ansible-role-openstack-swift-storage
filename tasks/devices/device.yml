@@ -1,0 +1,13 @@
+---
+- name: Format the device.
+  filesystem:
+    fstype: xfs
+    dev:    '/dev/{{ device }}'
+
+- name: Mount the device.
+  mount:
+    src:    '/dev/{{ device }}'
+    fstype: xfs
+    opts:   noatime,nodiratime,nobarrier,logbufs=8
+    name:   '/srv/node/{{ device }}'
+    state:  mounted

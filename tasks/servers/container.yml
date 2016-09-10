@@ -1,0 +1,37 @@
+---
+- name: Install container server package.
+  yum:
+    name:  openstack-swift-container
+    state: present
+
+- name: Download container server configuration sample.
+  get_url:
+    url:  https://git.openstack.org/cgit/openstack/swift/plain/etc/container-server.conf-sample?h=stable/mitaka
+    dest: /etc/swift/container-server.conf
+
+- name: Configure defaults.
+  crudini:
+    path: /etc/swift/container-server.conf
+    config:
+      DEFAULT:
+        bind_ip:     '{{ mgt_ip }}'
+        bind_port:   6001
+        user:        swift
+        swift_dir:   /etc/swift
+        devices:     /srv/node
+        mount_check: True
+
+- name: Configure pipeline settings.
+  ini_file:
+    dest:    /etc/swift/container-server.conf
+    section: pipeline:main
+    option:  pipeline
+    value:   healthcheck recon container-server
+
+- name: Configure recon cache directory.
+  crudini:
+    path: /etc/swift/container-server.conf
+    config:
+      'filter:recon':
+        use:              egg:swift#recon
+        recon_cache_path: /var/cache/swift

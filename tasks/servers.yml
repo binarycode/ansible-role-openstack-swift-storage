@@ -1,0 +1,4 @@
+---
+- include: servers/account.yml
+- include: servers/container.yml
+- include: servers/object.yml

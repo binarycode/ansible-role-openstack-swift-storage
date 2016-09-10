@@ -1,0 +1,37 @@
+---
+- name: Install account server package.
+  yum:
+    name:  openstack-swift-account
+    state: present
+
+- name: Download account server configuration sample.
+  get_url:
+    url:  https://git.openstack.org/cgit/openstack/swift/plain/etc/account-server.conf-sample?h=stable/mitaka
+    dest: /etc/swift/account-server.conf
+
+- name: Configure defaults.
+  crudini:
+    path: /etc/swift/account-server.conf
+    config:
+      DEFAULT:
+        bind_ip:     '{{ mgt_ip }}'
+        bind_port:   6002
+        user:        swift
+        swift_dir:   /etc/swift
+        devices:     /srv/node
+        mount_check: True
+
+- name: Configure pipeline settings.
+  ini_file:
+    dest:    /etc/swift/account-server.conf
+    section: pipeline:main
+    option:  pipeline
+    value:   healthcheck recon account-server
+
+- name: Configure recon cache directory.
+  crudini:
+    path: /etc/swift/account-server.conf
+    config:
+      'filter:recon':
+        use:              egg:swift#recon
+        recon_cache_path: /var/cache/swift

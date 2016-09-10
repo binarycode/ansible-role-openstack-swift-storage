@@ -1,0 +1,19 @@
+---
+- name: Ensure proper ownership of the mount point directory structure.
+  file:
+    path:    /srv/node
+    owner:   swift
+    group:   swift
+    recurse: yes
+    state:   directory
+  changed_when: no
+
+- name: Create the recon directory and ensure proper ownership of it.
+  file:
+    path:    /var/cache/swift
+    owner:   root
+    group:   swift
+    recurse: yes
+    state:   directory
+    mode:    0775
+  changed_when: no

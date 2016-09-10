@@ -1,0 +1,10 @@
+---
+- name: Install xfs utilities.
+  yum:
+    name:  xfsprogs
+    state: present
+
+- include:    devices/device.yml
+  with_items: '{{ devices }}'
+  loop_control:
+    loop_var: device

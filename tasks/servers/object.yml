@@ -1,0 +1,38 @@
+---
+- name: Install object server package.
+  yum:
+    name:  openstack-swift-object
+    state: present
+
+- name: Download object server configuration sample.
+  get_url:
+    url:  https://git.openstack.org/cgit/openstack/swift/plain/etc/object-server.conf-sample?h=stable/mitaka
+    dest: /etc/swift/object-server.conf
+
+- name: Configure defaults.
+  crudini:
+    path: /etc/swift/object-server.conf
+    config:
+      DEFAULT:
+        bind_ip:     '{{ mgt_ip }}'
+        bind_port:   6000
+        user:        swift
+        swift_dir:   /etc/swift
+        devices:     /srv/node
+        mount_check: True
+
+- name: Configure pipeline settings.
+  ini_file:
+    dest:    /etc/swift/object-server.conf
+    section: pipeline:main
+    option:  pipeline
+    value:   healthcheck recon object-server
+
+- name: Configure recon cache and lock directories.
+  crudini:
+    path: /etc/swift/container-server.conf
+    config:
+      'filter:recon':
+        use:              egg:swift#recon
+        recon_cache_path: /var/cache/swift
+        recon_lock_path:  /var/lock

@@ -1,1 +1,7 @@
 ---
+- include: devices.yml
+- include: rsync.yml
+- include: servers.yml
+- include: synchronize.yml
+- include: permissions.yml
+- include: services.yml

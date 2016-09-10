@@ -1,0 +1,11 @@
+---
+- name: Synchronize configuration and rings.
+  synchronize:
+    src:  '/etc/swift/{{ item }}'
+    dest: '/etc/swift/{{ item }}'
+  delegate_to: '{{ controller }}'
+  with_items:
+    - account.ring.gz
+    - container.ring.gz
+    - object.ring.gz
+    - swift.conf

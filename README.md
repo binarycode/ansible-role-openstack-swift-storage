@@ -11,7 +11,11 @@ None.
 Role Variables
 --------------
 
-None.
+Available variables are listed below, along with default values (see `defaults/main.yml`)
+
+    controller: controller
+
+Controller host.
 
 Dependencies
 ------------
